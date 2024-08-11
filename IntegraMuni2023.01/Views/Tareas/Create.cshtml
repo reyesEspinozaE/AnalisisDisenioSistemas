@@ -1,0 +1,126 @@
+﻿@model IntegraMuni2023._01.Models.Tarea
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Agregar Tarea</h1>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form id="createTaskForm" asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Titulo" class="control-label"></label>
+                <input asp-for="Titulo" class="form-control" />
+                <span asp-validation-for="Titulo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input asp-for="Descripcion" class="form-control" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Prioridad</label>
+                <div class="form-check">
+                    <input asp-for="Prioridad" type="radio" value="alta" class="form-check-input" id="prioridadAlta" />
+                    <label class="form-check-label" for="prioridadAlta">Alta</label>
+                </div>
+                <div class="form-check">
+                    <input asp-for="Prioridad" type="radio" value="media" class="form-check-input" id="prioridadMedia" />
+                    <label class="form-check-label" for="prioridadMedia">Media</label>
+                </div>
+                <div class="form-check">
+                    <input asp-for="Prioridad" type="radio" value="baja" class="form-check-input" id="prioridadBaja" />
+                    <label class="form-check-label" for="prioridadBaja">Baja</label>
+                </div>
+                <span asp-validation-for="Prioridad" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaInicio" class="control-label">Fecha Inicio</label>
+                <input type="text" id="fecha-inicio" asp-for="FechaInicio" class="form-control datepicker" />
+                <span asp-validation-for="FechaInicio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaFin" class="control-label">Fecha Fin</label>
+                <input type="text" id="fecha-fin" asp-for="FechaFin" class="form-control datepicker" />
+                <span asp-validation-for="FechaFin" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmpleadoId" class="control-label">Empleado</label>
+                <select asp-for="EmpleadoId" class="form-control" asp-items="ViewBag.EmpleadoId">
+                    <option></option>
+                </select>
+                <span asp-validation-for="EmpleadoId" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2">
+                <input type="submit" value="Agregar" class="btn btn-primary m-lg-2" />
+                <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            $('#fecha-inicio').datepicker({
+                dateFormat: 'yy-mm-dd',
+                minDate: 0,
+                onSelect: function (selectedDate) {
+                    $('#fecha-fin').datepicker('option', 'minDate', selectedDate);
+                }
+            });
+
+            $('#fecha-fin').datepicker({
+                dateFormat: 'yy-mm-dd',
+                minDate: 0,
+                onSelect: function (selectedDate) {
+                    var fechaInicio = $('#fecha-inicio').datepicker('getDate');
+                    var fechaFin = $(this).datepicker('getDate');
+
+                    if (fechaInicio && fechaFin && fechaFin < fechaInicio) {
+                        alert('La fecha de fin debe ser posterior o igual a la fecha de inicio.');
+                        $(this).datepicker('setDate', fechaInicio);
+                    }
+                }
+            });
+
+            // Adjuntar el código de manejo de formularios después de la carga del documento
+            $('#createTaskForm').submit(function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Operación realizada con éxito!',
+                                text: data.message
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '@Url.Action("Index", "Tareas")';
+                                }
+                            });
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    },
+                    error: function (error) {
+                        alert('Error en la solicitud: ' + error.statusText);
+                    }
+                });
+            });
+        });
+    </script>
+}

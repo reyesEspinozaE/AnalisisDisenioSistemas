@@ -1,0 +1,94 @@
+﻿@model IntegraMuni2023._01.Models.Proyecto
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Agregar Secciones de noticias</h1>
+
+<h4>Noticias</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form id="createTaskForm" asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="TituloNoticia" class="control-label"></label>
+                <input asp-for="TituloNoticia" class="form-control" />
+                <span asp-validation-for="TituloNoticia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Desarrollo" class="control-label"></label>
+                <textarea asp-for="Desarrollo" class="form-control" rows="8"></textarea>
+                <span asp-validation-for="Desarrollo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Nivel Prioridad</label>
+                <div class="form-check">
+                    <input asp-for="NivelPrioridad" type="radio" value="alta" class="form-check-input" id="prioridadAlta" />
+                    <label class="form-check-label" for="prioridadAlta">Alta</label>
+                </div>
+                <div class="form-check">
+                    <input asp-for="NivelPrioridad" type="radio" value="media" class="form-check-input" id="prioridadMedia" />
+                    <label class="form-check-label" for="prioridadMedia">Media</label>
+                </div>
+                <div class="form-check">
+                    <input asp-for="NivelPrioridad" type="radio" value="baja" class="form-check-input" id="prioridadBaja" />
+                    <label class="form-check-label" for="prioridadBaja">Baja</label>
+                </div>
+                <span asp-validation-for="NivelPrioridad" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Agregar Noticia" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Regresar</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $('#createTaskForm').submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (data) {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Operación realizada con éxito!',
+                            text: data.message
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '@Url.Action("Index", "Proyectoes")';
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.message
+                        });
+                    }
+                },
+                error: function (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error en la solicitud',
+                        text: error.statusText
+                    });
+                }
+            });
+        });
+    </script>
+}

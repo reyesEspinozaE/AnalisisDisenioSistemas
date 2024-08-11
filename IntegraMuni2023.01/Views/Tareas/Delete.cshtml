@@ -1,0 +1,92 @@
+﻿@model IEnumerable<IntegraMuni2023._01.Models.Tarea>
+
+<h1>Finalizar tareas</h1>
+
+<div>
+    <hr />
+    <form id="deleteMultipleForm" asp-action="DeleteMultiple" method="post">
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.Titulo)</h5>
+                            <p class="card-text">
+                                @Html.DisplayFor(modelItem => item.Descripcion)
+                            </p>
+                            <p class="card-text">
+                                @Html.DisplayFor(modelItem => item.Prioridad)
+                            </p>
+                            <p class="card-text">
+                                @Html.DisplayFor(modelItem => item.FechaInicio)
+                            </p>
+                            <p class="card-text">
+                                @Html.DisplayFor(modelItem => item.FechaFin)
+                            </p>
+                            <p class="card-text">
+                                @Html.DisplayFor(modelItem => item.Empleado.Nombre)
+                            </p>
+                            <p class="card-text">
+                                @Html.DisplayFor(modelItem => item.Estado)
+                            </p>
+                            
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input mt-2" name="selectedTasks" value="@item.TareaId" data-estado="@item.Estado" />
+                                <label class="form-check-label mt-2">Seleccionar</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <input type="submit" value="Finalizar tareas seleccionadas" class="btn btn-danger" /> 
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Cancelar</a>
+    </form>
+</div>
+@section scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            // Capturar el submit del formulario
+            $(document).on('submit', '#deleteMultipleForm', function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            // Mostrar SweetAlert2
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Operación realizada con éxito!',
+                                text: data.message
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Redirigir a la página Index
+                                    window.location.href = '@Url.Action("Index", "Tareas")';
+                                }
+                            });
+                        } else {
+                            // Mostrar SweetAlert2 con mensaje de error
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: data.message
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

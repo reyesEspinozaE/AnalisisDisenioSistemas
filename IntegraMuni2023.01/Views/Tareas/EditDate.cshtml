@@ -1,0 +1,151 @@
+﻿@model IEnumerable<IntegraMuni2023._01.Models.Tarea>
+
+<h1>Modificar las fechas de las Tareas</h1>
+
+<div>
+    <hr />
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Titulo)</h5>
+                        <p class="card-text">
+                            @Html.DisplayFor(modelItem => item.Descripcion)
+                        </p>
+                        <p class="card-text">
+                            @Html.DisplayFor(modelItem => item.Prioridad)
+                        </p>
+                        <p class="card-text">
+                            @Html.DisplayFor(modelItem => item.FechaInicio)
+                        </p>
+                        <p class="card-text">
+                            @Html.DisplayFor(modelItem => item.FechaFin)
+                        </p>
+                        <p class="card-text">
+                            @Html.DisplayFor(modelItem => item.Empleado.Nombre)
+                        </p>
+                        <p class="card-text">
+                            @Html.DisplayFor(modelItem => item.Estado)
+                        </p>
+
+                        <!-- Botón para abrir el modal -->
+                        <button type="button" class="btn btn-primary edit-task" data-task-id="@item.TareaId" data-toggle="modal" data-target="#editModal">
+                            Modificar Fechas
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal de edición de fechas -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Modificar Fechas</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editDateForm" asp-action="EditDate" method="post">
+                    <div class="form-group">
+                        <label for="fecha-inicio">Fecha Inicio</label>
+                        <input id="fecha-inicio" name="FechaInicio" class="form-control datepicker" />
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="fecha-fin">Fecha Fin</label>
+                        <input id="fecha-fin" name="FechaFin" class="form-control datepicker" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <a class="btn btn-primary" asp-controller="Tareas" asp-action="EditDate">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function () {
+            var taskId; // Variable para almacenar el data-task-id
+
+            $('.edit-task').click(function () {
+                // Obtén el data-task-id del botón clicado
+                taskId = $(this).data('task-id');
+                // Aquí puedes personalizar la lógica de carga del formulario de edición si es necesario
+                $('#editModal').modal('show');
+            });
+
+            $('#fecha-inicio').datepicker({
+                dateFormat: 'yy-mm-dd',
+                minDate: 0,
+                onSelect: function (selectedDate) {
+                    $('#fecha-fin').datepicker('option', 'minDate', selectedDate);
+                }
+            });
+
+            $('#fecha-fin').datepicker({
+                dateFormat: 'yy-mm-dd',
+                minDate: 0,
+                onSelect: function (selectedDate) {
+                    var fechaInicio = $('#fecha-inicio').datepicker('getDate');
+                    var fechaFin = $(this).datepicker('getDate');
+
+                    if (fechaInicio && fechaFin && fechaFin < fechaInicio) {
+                        alert('La fecha de fin debe ser posterior o igual a la fecha de inicio.');
+                        $(this).datepicker('setDate', fechaInicio);
+                    }
+                }
+            });
+
+            $('#editDateForm').submit(function (e) {
+                e.preventDefault();
+
+                // Agrega taskId a los datos a enviar al servidor
+                var formData = $(this).serialize() + '&tareaId=' + taskId;
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        if (data.success) {
+                            $('#editModal').modal('hide'); // Cerrar el modal
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Operación realizada con éxito!',
+                                text: data.message
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '@Url.Action("EditDate", "Tareas")';
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: data.message
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '@Url.Action("EditDate", "Tareas")';
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

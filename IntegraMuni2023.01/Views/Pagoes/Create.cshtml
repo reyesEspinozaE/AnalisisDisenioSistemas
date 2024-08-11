@@ -1,0 +1,117 @@
+﻿@model IntegraMuni2023._01.Models.Pago
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Realice el pago</h1>
+<hr />
+<section class="p-3 p-md-5 d-flex justify-content-center align-items-center" style=">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-12 col-lg-10 col-xl-7">
+            <div class="card rounded-5">
+                <div class="card-body p-6">
+                    <div class="text-center mb-6">
+                        <h3>Datos de pago</h3>
+                    </div>
+                    <form asp-action="Create" asp-controller="Pagoes" method="post">
+                        <div class="form-group">
+                            <label class="control-label">Servicio id</label>
+                            <input name="ServicioContratadoId" class="form-control" readonly value="@ViewBag.ServicioContratadoId" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Cliente Id</label>
+                            <input name="ClienteId" class="form-control" readonly value="@ViewBag.ClienteId" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Identificacion" class="control-label"></label>
+                            <input asp-for="Identificacion" class="form-control" readonly value="@ViewBag.ClienteIdentificacion" />
+                            <span asp-validation-for="Identificacion" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Consumidor</label>
+                            <input class="form-control" readonly value="@ViewBag.ClienteNombre" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="MontoPago" class="control-label"></label>
+                            <input name="MontoPago" asp-for="MontoPago" class="form-control" readonly value="@ViewBag.MontoPago" />
+                            <span asp-validation-for="MontoPago" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="MetodoPago" class="control-label"></label>
+                            <input asp-for="MetodoPago" class="form-control" readonly value="@ViewBag.MetodoPago" />
+                            <span asp-validation-for="MetodoPago" class="text-danger"></span>
+                        </div>
+
+                        <p class="fw-bold mb-6 pb-4">Datos de tarjeta:</p>
+
+                        <div class="form-outline mb-6">
+                            <input type="text" id="formControlLgXsd" class="form-control form-control-lg" />
+                            <label class="form-label" for="formControlLgXsd">Nombre completo</label>
+                        </div>
+                        <div class="row-mb-12">
+                            <img class="img-fluid" src="https://img.icons8.com/color/48/000000/visa.png" />
+                            <img class="img-fluid" src="https://img.icons8.com/color/48/000000/mastercard-logo.png" />
+                        </div>
+                        <div class="row mb-6">
+                            <div class="col-6">
+                                <div class="form-outline">
+                                    <input type="text" id="formControlLgXM" class="form-control form-control-lg"
+                                           placeholder="**** **** **** ****" />
+                                    <label class="form-label" for="formControlLgXM">Numero de tarjeta</label>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-outline">
+
+                                    <input type="text" id="formControlLgExpk" class="form-control form-control-lg"
+                                           placeholder="MM/YYYY" />
+                                    <label class="form-label" for="formControlLgExpk">Expire</label>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-outline">
+                                    <input type="password" id="formControlLgcvv" class="form-control form-control-lg"
+                                           placeholder="Cvv" />
+                                    <label class="form-label" for="formControlLgcvv">CVV</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mt-2">
+                            <input type="submit" value="Realizar Pago" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div>
+    <a asp-action="Index" asp-controller="Home">Regresar</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            $(document).ready(function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Pago realizado con exito!',
+                    text: '@TempData["SuccessMessage"]'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '@Url.Action("Index", "Home")';
+                    }
+                });
+            });
+        </script>
+    }
+}

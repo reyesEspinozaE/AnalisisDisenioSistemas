@@ -1,0 +1,54 @@
+﻿@model IntegraMuni2023._01.Models.Cliente
+
+@{
+    ViewData["Title"] = "Activar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Activar Cuenta</h1>
+<div class="countainer">
+    <div class="row">
+        <div class="col-sm-4">
+        </div>
+
+        <div class="col-sm-4">
+            <form asp-controller="Clientes" asp-action="Activar" method="post" id="FormularioLogin">
+                @* Solicitamos el email*@
+                <div class="form-group">
+                    <label asp-for="CorreoElectronico" class="control-label">Email</label>
+                    <input asp-for="CorreoElectronico" class="form-control" />
+                    <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
+                </div>
+                @*Boton que ejecuta el post del formulario*@
+                <div class="form-group mt-3">
+                    <input type="submit" value="Activar" class="btn btn-primary" />
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="col-sm-4">
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: '¡Reactivacion Exitosa!',
+                text: '@TempData["SuccessMessage"]'
+            });
+        </script>
+    }
+}
+

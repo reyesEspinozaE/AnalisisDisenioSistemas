@@ -1,0 +1,72 @@
+﻿@model IntegraMuni2023._01.Models.Cliente
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Perfil</h1>
+<p style="display:none">@Model.ClienteId</p>
+<p style="display:none">@User.Identity.Name</p>
+<div>
+    <h4>Cliente</h4>
+    <hr />
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NombreCompleto)
+            </th>
+            <td>
+                @Html.DisplayFor(model => model.NombreCompleto)
+            </td>
+        </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Identificacion)
+            </th>
+            <td>
+                @Html.DisplayFor(model => model.Identificacion)
+            </td>
+        </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CorreoElectronico)
+            </th>
+            <td>
+                @Html.DisplayFor(model => model.CorreoElectronico)
+            </td>
+        </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Direccion)
+            </th>
+            <td>
+                @Html.DisplayFor(model => model.Direccion)
+            </td>
+        </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefono)
+            </th>
+            <td>
+                @Html.DisplayFor(model => model.Telefono)
+            </td>
+        </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <td>
+                @Html.DisplayFor(model => model.Estado)
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.ClienteId" class="btn btn-primary">Editar</a>
+    @if (User.IsInRole("Administrador"))
+    {
+        <a asp-action="Delete" asp-route-id="@Model?.ClienteId" class="btn btn-danger">Eliminar</a>
+    }
+    <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Volver a la página principal</a>
+</div>

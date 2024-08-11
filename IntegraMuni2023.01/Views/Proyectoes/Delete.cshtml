@@ -1,0 +1,65 @@
+﻿@model IEnumerable<IntegraMuni2023._01.Models.Proyecto>
+
+<!-- Aquí va tu código HTML de encabezado, estilos, y estructura de la página -->
+
+<div class="card-deck">
+    @foreach (var proyecto in Model)
+    {
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">@proyecto.TituloNoticia</h5>
+                <p class="card-text">@proyecto.Desarrollo</p>
+                <p class="card-text">@proyecto.NivelPrioridad</p>
+                <p class="card-text">@proyecto.FechaPublicacion</p>
+                <p class="card-text">@proyecto.Estado</p>
+                @if (proyecto.Estado == "Activa")
+                {
+                    <form id="form-@proyecto.NoticiaId" asp-action="Delete" asp-route-id="@proyecto.NoticiaId" method="post">
+                        <button type="submit" class="btn btn-danger" id="btn-@proyecto.NoticiaId">Inhabilitar</button>
+                    </form>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            $('form').submit(function (event) {
+                event.preventDefault();
+                var form = $(this);
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    method: form.attr('method'),
+                    data: form.serialize(),
+                    dataType: 'json', // Asegúrate de especificar que esperas datos en formato JSON
+                    success: function (data) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Operación realizada con éxito!',
+                            text: data.message // Accede al mensaje desde 'data'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '@Url.Action("Delete", "Proyectoes")';
+                            }
+                        });
+                    },
+                    error: function () {
+                        // Manejar el error si es necesario
+                    }
+                });
+
+            });
+        });
+    </script>
+}

@@ -1,0 +1,63 @@
+﻿@model IntegraMuni2023._01.Models.Tarea
+
+@{
+    ViewData["Title"] = "Edit";
+}
+<hr />
+<div class="row">
+    <div class="col-md-6" id="editTaskForm">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="TareaId" />
+            <div class="form-group">
+                <label asp-for="Titulo" class="control-label"></label>
+                <input asp-for="Titulo" class="form-control" />
+                <span asp-validation-for="Titulo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input asp-for="Descripcion" class="form-control" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Prioridad</label>
+                <div class="form-check">
+                    <input asp-for="Prioridad" type="radio" value="alta" class="form-check-input" id="prioridadAlta" />
+                    <label class="form-check-label" for="prioridadAlta">Alta</label>
+                </div>
+                <div class="form-check">
+                    <input asp-for="Prioridad" type="radio" value="media" class="form-check-input" id="prioridadMedia" />
+                    <label class="form-check-label" for="prioridadMedia">Media</label>
+                </div>
+                <div class="form-check">
+                    <input asp-for="Prioridad" type="radio" value="baja" class="form-check-input" id="prioridadBaja" />
+                    <label class="form-check-label" for="prioridadBaja">Baja</label>
+                </div>
+                <span asp-validation-for="Prioridad" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="display:none">
+                <label asp-for="FechaInicio" class="control-label">Fecha Inicio</label>
+                <input type="text" id="fecha-inicio" asp-for="FechaInicio" class="form-control datepicker" />
+                <span asp-validation-for="FechaInicio" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="display:none">
+                <label asp-for="FechaFin" class="control-label">Fecha Fin</label>
+                <input type="text" id="fecha-fin" asp-for="FechaFin" class="form-control datepicker" />
+                <span asp-validation-for="FechaFin" class="text-danger"></span>
+            </div>
+            <div class="form-group" >
+                <label asp-for="EmpleadoId" class="control-label"></label>
+                <select asp-for="EmpleadoId" class="form-control" asp-items="ViewBag.EmpleadoId"></select>
+                <span asp-validation-for="EmpleadoId" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2 d-flex justify-content-between">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+                <a class="btn btn-primary" asp-controller="Tareas" asp-action="Index">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

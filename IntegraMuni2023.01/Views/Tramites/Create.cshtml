@@ -1,0 +1,70 @@
+﻿@model IntegraMuni2023._01.Models.Tramite
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Solicite el tramite</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group" hidden>
+                <label asp-for="ClienteId" class="control-label"></label>
+                <input asp-for="ClienteId" class="form-control" readonly value="@ViewBag.ClienteId"></input>
+            </div>
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <select asp-for="Descripcion" class="form-control">
+                    <option value="" selected disabled hidden>Seleccione una descripción</option>
+                    <option value="Formulario Declaración Modificación Artículo 10 Licores">Formulario Declaración Modificación Artículo 10 Licores</option>
+                    <option value="Patente Comercial">Patente Comercial</option>
+                    <option value="Permiso espectáculos públicos-asociaciones, entidades y similares">Permiso espectáculos públicos-asociaciones, entidades y similares</option>
+                    <option value="Permiso espectáculos públicos-patentados">Permiso espectáculos públicos-patentados</option>
+                    <option value="Renovación licencia de licores">Renovación licencia de licores</option>
+                    <option value="Solicitud licencia de licores">Solicitud licencia de licores</option>
+                    <option value="Permiso provisional comercial">Permiso provisional comercial</option>
+                    <option value="Eliminacion Licencia Licores">Eliminacion Licencia Licores</option>
+                    <option value="Modificacion Patente Comercial">Modificacion Patente Comercial</option>
+                    <option value="Solicitud Moratoria de Tributos Municipales">Solicitud Moratoria de Tributos Municipales</option>
+                </select>
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-2">
+                <input type="submit" value="Solicitar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" asp-controller="Home">Regresar</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            $(document).ready(function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Tramite solicitado con exito!',
+                    text: '@TempData["SuccessMessage"]'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var lastTramiteId = '@TempData["LastTramiteId"]';
+                        window.location.href = '@Url.Action("ProcesarPago", "Tramites")' + '?tramiteId=' + lastTramiteId;
+                    }
+                });
+            });
+        </script>
+    }
+}

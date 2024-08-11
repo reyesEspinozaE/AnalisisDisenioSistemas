@@ -1,0 +1,64 @@
+﻿@model IEnumerable<IntegraMuni2023._01.Models.Cliente>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Tabla de Clientes</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NombreCompleto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Identificacion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CorreoElectronico)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Direccion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefono)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NombreCompleto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Identificacion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CorreoElectronico)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Direccion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Telefono)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Estado)
+                </td>
+                <td>
+                    <a href="@Url.Action("Edit", new { id = item.ClienteId })" class="btn btn-primary">Editar</a>
+                    <a href="@Url.Action("Delete", new { id = item.ClienteId })" class="btn btn-danger">Eliminar</a>
+                    <a href="@Url.Action("Activar", new { id = item.ClienteId })" class="btn btn-success">Activar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

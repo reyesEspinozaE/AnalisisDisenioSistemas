@@ -1,0 +1,140 @@
+﻿@model IntegraMuni2023._01.Models.PagosTramites
+
+@{
+    ViewData["Title"] = "ProcesarPago";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Procesar Pago</h1>
+
+<h4>Pagos de Tramites</h4>
+<hr />
+<div class="row d-flex justify-content-center align-items-center">
+    <div class="col-md-4">
+        <form asp-action="ProcesarPago" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group" style="display:none">
+                <label asp-for="TramiteID" class="control-label"></label>
+                <input asp-for="TramiteID" class="form-control" value="@Model.TramiteID" name="TramiteID" />
+                <span asp-validation-for="TramiteID" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="display:none">
+                <label asp-for="ClienteID" class="control-label"></label>
+                <input asp-for="ClienteID" class="form-control" value="@Model.ClienteID" name="ClienteID" />
+                <span asp-validation-for="ClienteID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input asp-for="Descripcion" class="form-control" readonly value="@Model.Descripcion" name="Descripcion" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="FechaPago" class="control-label"></label>
+                <input asp-for="FechaPago" class="form-control" />
+                <span asp-validation-for="FechaPago" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MontoPago" class="control-label"></label>
+                <input asp-for="MontoPago" class="form-control" readonly value="@Model.MontoPago" />
+                <span asp-validation-for="MontoPago" class="text-danger"></span>
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="PagoPendiente" class="control-label"></label>
+                <input asp-for="PagoPendiente" class="form-control" />
+                <span asp-validation-for="PagoPendiente" class="text-danger"></span>
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="FormularioPagoCompletado" class="control-label"></label>
+                <input asp-for="FormularioPagoCompletado" class="form-control" />
+                <span asp-validation-for="FormularioPagoCompletado" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Identificacion" class="control-label"></label>
+                <input asp-for="Identificacion" class="form-control" readonly value="@Model.Identificacion" />
+                <span asp-validation-for="Identificacion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MetodoPago" class="control-label"></label>
+                <input asp-for="MetodoPago" class="form-control" readonly/>
+                <span asp-validation-for="MetodoPago" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CorreoElectronico" class="control-label"></label>
+                <input asp-for="CorreoElectronico" class="form-control" name="CorreoElectronico" />
+                <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NombreCompletoTarjeta" class="control-label"></label>
+                <input asp-for="NombreCompletoTarjeta" class="form-control" name="NombreCompletoTarjeta" />
+                <span asp-validation-for="NombreCompletoTarjeta" class="text-danger"></span>
+            </div>
+            <div class="row-mb-12">
+                <img class="img-fluid" src="https://img.icons8.com/color/48/000000/visa.png" />
+                <img class="img-fluid" src="https://img.icons8.com/color/48/000000/mastercard-logo.png" />
+            </div>
+            <div class="row mb-6">
+                <div class="col-6">
+                    <div class="form-outline">
+                        <input type="text" id="formControlLgXM" class="form-control form-control-lg"
+                               placeholder="**** **** **** ****" />
+                        <label class="form-label" for="formControlLgXM">Numero de tarjeta</label>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-outline">
+
+                        <input type="text" id="formControlLgExpk" class="form-control form-control-lg"
+                               placeholder="MM/YYYY" />
+                        <label class="form-label" for="formControlLgExpk">Expire</label>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-outline">
+                        <input type="password" id="formControlLgcvv" class="form-control form-control-lg"
+                               placeholder="Cvv" />
+                        <label class="form-label" for="formControlLgcvv">CVV</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group mt-2">
+                <input type="submit" value="Pagar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="Index" asp-controller="Home">Regresar</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            $(document).ready(function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Tramite pagado con exito!',
+                    text: '@TempData["SuccessMessage"]'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '@Url.Action("Index", "Home")';
+            }
+                            });
+                        });
+        </script>
+    }
+    @if (TempData["Mensaje"] != null)
+    {
+        <script>
+            $(document).ready(function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: '¡Verifique los datos!',
+                    text: '@TempData["Mensaje"]'
+                });
+            });
+        </script>
+    }
+}

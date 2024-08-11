@@ -1,0 +1,97 @@
+﻿@model IntegraMuni2023._01.Models.Cliente
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Iniciar Sesion</h1>
+<div class="countainer">
+    <div class="row">
+        <div class="col-sm-4">
+        </div>
+
+        <div class="col-sm-4">
+            <form asp-action="Login" method="post" id="FormularioLogin">
+                @* Solicitamos el email*@
+                <div class="form-group">
+                    <label asp-for="CorreoElectronico" class="control-label">Email</label>
+                    <input asp-for="CorreoElectronico" class="form-control" />
+                    <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
+                </div>
+                @* solicitamos el password*@
+                <div class="form-group">
+                    <label asp-for="Clave" class="control-label">Password</label>
+                    <input asp-for="Clave" class="form-control" />
+                    <span asp-validation-for="Clave" class="text-danger"></span>
+
+                    <a class="mt-2" asp-area="" asp-controller="Clientes" asp-action="Create">No posees un Usuario? crea tu cuenta</a>
+
+                </div>
+
+                <div class="form-check">
+                    <input type="hidden" name="esEmpleado" value="false" />
+                    <input class="form-check-input" type="checkbox" id="esEmpleadoCheckbox" name="esEmpleadoCheckbox" onclick="toggleEsEmpleado()">
+                    <label class="form-check-label" for="esEmpleadoCheckbox">
+                        Ingresar como Empleado
+                    </label>
+                </div>
+
+                <script>
+                    function toggleEsEmpleado() {
+                        var esEmpleadoCheckbox = document.getElementById("esEmpleadoCheckbox");
+                        var esEmpleadoHidden = document.getElementsByName("esEmpleado")[0];
+
+                        esEmpleadoHidden.value = esEmpleadoCheckbox.checked.toString();
+                    }
+                </script>
+
+
+                @*Boton que ejecuta el post del formulario*@
+                <div class="form-group mt-3">
+                    <input type="submit" value="Aceptar" class="btn btn-primary" />
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="col-sm-4">
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '@TempData["ErrorMessage"]'
+            });
+        </script>
+    }
+    @if (TempData["WarningMessage"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'warning',
+                title: '¡Reactive su cuenta!',
+                text: '@TempData["WarningMessage"]'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirigir a la página Index
+                    window.location.href = '@Url.Action("Activar", "Clientes")';
+                }
+            });
+        </script>
+    }
+}
+

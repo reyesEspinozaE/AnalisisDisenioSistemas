@@ -1,0 +1,38 @@
+﻿@model IntegraMuni2023._01.Models.Proyecto
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<hr />
+<div class="row">
+    <div class="col-md-6" id="editTaskForm">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label">Nivel Prioridad</label>
+                <div class="form-check">
+                    <input asp-for="NivelPrioridad" type="radio" value="alta" class="form-check-input" id="prioridadAlta" />
+                    <label class="form-check-label" for="prioridadAlta">Alta</label>
+                </div>
+                <div class="form-check">
+                    <input asp-for="NivelPrioridad" type="radio" value="media" class="form-check-input" id="prioridadMedia" />
+                    <label class="form-check-label" for="prioridadMedia">Media</label>
+                </div>
+                <div class="form-check">
+                    <input asp-for="NivelPrioridad" type="radio" value="baja" class="form-check-input" id="prioridadBaja" />
+                    <label class="form-check-label" for="prioridadBaja">Baja</label>
+                </div>
+                <span asp-validation-for="NivelPrioridad" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2 d-flex justify-content-between">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+                <a class="btn btn-primary" asp-controller="Proyectoes" asp-action="Index">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

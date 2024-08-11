@@ -1,0 +1,70 @@
+﻿@model IEnumerable<IntegraMuni2023._01.Models.Tramite>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Tramites Solicitados</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Descripcion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaInicio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaFinalizacion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Identificacion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cliente)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EstadoSolicitud)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaInicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaFinalizacion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Identificacion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cliente.NombreCompleto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstadoSolicitud)
+            </td>
+            <td>
+                @if (User.IsInRole("Administrador") || User.IsInRole("Empleado") || User.IsInRole("Jefe"))
+                {
+                        <form asp-action="CambiarEstadoDePago" asp-route-id="@item.TramiteId" method="post">
+                            <input type="hidden" name="newStatus" value="Habilitado" />
+                            <button type="submit">Habilitar</button>
+                        </form>
+                        <form asp-action="CambiarEstadoDePago" asp-route-id="@item.TramiteId" method="post">
+                            <input type="hidden" name="newStatus" value="Inhabilitado" />
+                            <button type="submit">Inhabilitar</button>
+                        </form>
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

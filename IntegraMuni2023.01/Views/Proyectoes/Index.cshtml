@@ -1,0 +1,160 @@
+﻿@model IEnumerable<IntegraMuni2023._01.Models.Proyecto>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="row">
+    <div class="col-md-4">
+        <!-- Contenido de la primera columna -->
+    </div>
+    <div class="col-md-4">
+        <!-- Contenido de la segunda columna -->
+    </div>
+    <div class="col-md-4 d-flex justify-content-end">
+        <form asp-controller="Proyectoes" asp-action="Index" method="get" id="filterForm" class="form-inline mb-3">
+            <div class="form-group">
+                <select id="dateFilter" name="filterType" class="selectpicker" data-style="btn-primary" data-width="200px">
+                    <option value="" selected disabled hidden>Busqueda por rangos de fecha</option>
+                    <option value="recent">Noticias recientes</option>
+                    <option value="threeMonths">Más de 3 meses</option>
+                    <option value="oneYear">Hace un año</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-primary mt-1" id="filterButton">Filtrar</button>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">@Html.DisplayFor(modelItem => item.TituloNoticia)</h5>
+                    <p class="card-text">@Html.DisplayFor(modelItem => item.Desarrollo)</p>
+                    <p class="card-text">@Html.DisplayFor(modelItem => item.NivelPrioridad)</p>
+                    <p class="card-text">@Html.DisplayFor(modelItem => item.FechaPublicacion)</p>
+                    @if (User.IsInRole("Administrador") || User.IsInRole("Blogger"))
+                    {
+                        <div class="mt-auto">
+                            <button class="btn btn-primary edit-task" data-task-id="@item.NoticiaId">Modificar la prioridad</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+<a class="btn btn-primary" asp-controller="Home" asp-action="Index">Regresar</a>
+@if (User.IsInRole("Administrador") || User.IsInRole("Blogger"))
+{
+    <a class="btn btn-primary" asp-controller="Proyectoes" asp-action="Create">Agregar Noticia</a>
+}
+
+<div class="modal" id="editTaskModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modificar la prioridad de las noticias</h5>
+            </div>
+            <div class="modal-body">
+                <!-- Aquí cargarás el formulario de edición de la tarea -->
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Función para abrir el modal de edición
+        function openEditModal(taskId) {
+            $.ajax({
+                url: '@Url.Action("Edit", "Proyectoes")/' + taskId,
+                type: 'GET',
+                success: function (data) {
+                    if (data) {
+                        // Cargar el formulario HTML en el modal
+                        $('#editTaskModal .modal-body').html(data);
+                        $('#editTaskModal').modal('show');
+                    }
+                }
+            });
+        }
+
+        // Manejar clic en el botón "Editar"
+        $('.edit-task').click(function () {
+            $('#editTaskModal').modal('show');
+        });
+        // Manejar clic en el botón "Editar"
+        $(document).on('click', '.edit-task', function () {
+            var taskId = $(this).data('task-id');
+            openEditModal(taskId);
+        });
+
+        // Capturar el submit del formulario dentro del modal
+        $(document).on('submit', '#editTaskForm form', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (data) {
+                    if (data.success) {
+                        // Mostrar SweetAlert2
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Operación realizada con éxito!',
+                            text: data.message
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Redirigir a la página Index
+                                window.location.href = '@Url.Action("Index", "Proyectoes")';
+                            }
+                        });
+                    } else {
+                        // Mostrar SweetAlert2 con mensaje de error
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.message
+                        });
+                    }
+                }
+            });
+        });
+
+        $('#filterButton').click(function () {
+            var selectedValue = $('#dateFilter').val();
+            if (!selectedValue) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '¡Debe seleccionar una opción!',
+                    text: 'Por favor, elija una opción antes de filtrar.'
+                });
+            } else {
+                $('#filterForm').submit();
+            }
+        });
+
+    </script>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'warning',
+                title: '¡Sin resultados!',
+                text: '@TempData["ErrorMessage"]'
+            });
+        </script>
+    }
+}

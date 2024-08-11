@@ -1,0 +1,81 @@
+﻿@model IEnumerable<IntegraMuni2023._01.Models.ServiciosContratado>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Consulta de Pagos</h1>
+
+<p>
+    <h3>Consulte todos sus pagos pendientes</h3>
+</p>
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.FechaInicio)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FechaFinalizacion)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Descripcion)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Consumo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EstadoServicio)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ClienteId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Servicio.NombreServicio)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaInicio)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaFinalizacion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Descripcion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Consumo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EstadoServicio)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Cliente.Identificacion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Servicio.NombreServicio)
+                    </td>
+                    <td>
+                        <form asp-controller="Pagoes" asp-action="Create" method="get">
+                            <input type="hidden" name="servicioContratadoId" value="@item.ServicioContratadoId" />
+                            <button type="submit">Pagar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Este cliente no posee pagos pendientes.</p>
+}

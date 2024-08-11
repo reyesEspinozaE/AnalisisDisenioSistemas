@@ -1,0 +1,82 @@
+﻿@model IEnumerable<IntegraMuni2023._01.Models.ServiciosContratado>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Servicios contratados</h1>
+
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.FechaInicio)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FechaFinalizacion)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Descripcion)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Consumo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EstadoServicio)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ClienteId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Servicio.NombreServicio)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaInicio)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaFinalizacion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Descripcion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Consumo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EstadoServicio)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Cliente.Identificacion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Servicio.NombreServicio)
+                    </td>
+                    <td>
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.ServicioContratadoId">Edit</a> 
+                            <a asp-action="Details" asp-route-id="@item.ServicioContratadoId">Details</a>
+                            <a asp-action="Delete" asp-route-id="@item.ServicioContratadoId">Delete</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No hay servicios contratados para este cliente.</p>
+}
+
